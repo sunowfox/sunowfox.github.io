@@ -78,7 +78,7 @@
     <article id="post-github搭建博客" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
   <div class="article-meta">
     <a href="/2025/05/19/github%E6%90%AD%E5%BB%BA%E5%8D%9A%E5%AE%A2/" class="article-date">
-  <time class="dt-published" datetime="2025-05-19T09:24:16.146Z" itemprop="datePublished">2025-05-19</time>
+  <time class="dt-published" datetime="2025-05-19T09:27:06.811Z" itemprop="datePublished">2025-05-19</time>
 </a>
     
   </div>
@@ -99,7 +99,9 @@
       
         <p>这部分网上的资料很多了,这次选用的也是hexo,中间有写曲折，记录一下</p>
 <p>1 使用npm 下载安装hexo一直不成功，后来使用npm先安装cnpm,在用cnpm安装hexo才成功<br>2 ssh证书好像过期了，重新生成后才可以</p>
-<p>‘’’bash<br>eval “$(ssh-agent -s)”<br>ssh-add ~&#x2F;.ssh&#x2F;id_rsa<br>‘’’<br>3 如果需要域名访问的话，需要添加CNAME文件，放在public文件夹中</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">eval</span> <span class="string">&quot;<span class="subst">$(ssh-agent -s)</span>&quot;</span></span><br><span class="line">ssh-add ~/.ssh/id_rsa</span><br></pre></td></tr></table></figure>
+
+<p>3 如果需要域名访问的话，需要添加CNAME文件，放在public文件夹中</p>
 
       
     </div>
