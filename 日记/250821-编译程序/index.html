@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.sunow.top","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"giscus","storage":true,"lazyload":false,"nav":null,"activeClass":"giscus"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="前老板找到我，说现在这个设备失联的事该怎么弄，能怎么弄，最后估计只能现场一台台升级了。关键网口都在设备后面，估计还得拆下来才能通过网口升级。不过这个麻烦已经不用我考虑了，我现在头痛的是，居然要修改程序。 查看了几个固定ip的地方，大概有6处，视频推送4处可以更改成域名，frp可以更改成域名，连接后台的app却不能直接改域名，因为在程序中，为了可靠性，做了个ip合法性验证，直接将配置文件的ip修改成">
+<meta property="og:type" content="article">
+<meta property="og:title" content="编译程序">
+<meta property="og:url" content="https://blog.sunow.top/%E6%97%A5%E8%AE%B0/250821-%E7%BC%96%E8%AF%91%E7%A8%8B%E5%BA%8F/index.html">
+<meta property="og:site_name" content="寂静山林">
+<meta property="og:description" content="前老板找到我，说现在这个设备失联的事该怎么弄，能怎么弄，最后估计只能现场一台台升级了。关键网口都在设备后面，估计还得拆下来才能通过网口升级。不过这个麻烦已经不用我考虑了，我现在头痛的是，居然要修改程序。 查看了几个固定ip的地方，大概有6处，视频推送4处可以更改成域名，frp可以更改成域名，连接后台的app却不能直接改域名，因为在程序中，为了可靠性，做了个ip合法性验证，直接将配置文件的ip修改成">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-08-21T04:22:11.000Z">
+<meta property="article:modified_time" content="2025-08-21T04:22:11.000Z">
+<meta property="article:author" content="sunow">
+<meta property="article:tag" content="日记">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.sunow.top/%E6%97%A5%E8%AE%B0/250821-%E7%BC%96%E8%AF%91%E7%A8%8B%E5%BA%8F/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.sunow.top/%E6%97%A5%E8%AE%B0/250821-%E7%BC%96%E8%AF%91%E7%A8%8B%E5%BA%8F/","path":"日记/250821-编译程序/","title":"编译程序"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>编译程序 | 寂静山林</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">寂静山林</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">思绪飘来飘去，偶尔在这里停留</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">sunow</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    
+    
+    <div class="links-of-blogroll">
+    <div class="sidebar-inner sidebar-recent-posts">
+     <div class="animated">
+       <div class="links-of-blogroll-title" style="margin-bottom: 10px; font-size: 18px;">
+		<!-- 选择合适的icon --><i class="fas fa-history" aria-hidden="true"></i>
+        近期更新
+      </div>
+      <ul class="links-of-blogroll-list">
+		<!-- 文章排序规格,-updated 按照文章更新时间倒排 -->
+        
+		 <!-- 显示四条近期文章 -->
+        
+          <li>
+            <a href="/%E6%97%A5%E8%AE%B0/260206-%E8%9B%8B%E7%B3%95/" title="蛋糕" target="_blank">蛋糕</a>
+          </li>
+        
+          <li>
+            <a href="/%E6%8A%80%E6%9C%AF/%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96/" title="变量覆盖" target="_blank">变量覆盖</a>
+          </li>
+        
+          <li>
+            <a href="/%E6%8A%80%E6%9C%AF/%E6%97%A0%E9%A2%98/" title="无题" target="_blank">无题</a>
+          </li>
+        
+          <li>
+            <a href="/%E6%8A%80%E6%9C%AF/%E6%80%9D%E7%BB%B4%E6%A8%A1%E5%BC%8F/" title="思维模式" target="_blank">思维模式</a>
+          </li>
+        
+          <li>
+            <a href="/%E9%9A%8F%E6%83%B3/%E6%9D%83%E7%BB%8F/" title="权经" target="_blank">权经</a>
+          </li>
+        
+      </ul>
+      </div>
+      </div>
+    </div>
+   
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.sunow.top/%E6%97%A5%E8%AE%B0/250821-%E7%BC%96%E8%AF%91%E7%A8%8B%E5%BA%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sunow">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="寂静山林">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="编译程序 | 寂静山林">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          编译程序
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-08-21 12:22:11" itemprop="dateCreated datePublished" datetime="2025-08-21T12:22:11+08:00">2025-08-21</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%97%A5%E8%AE%B0/" itemprop="url" rel="index"><span itemprop="name">日记</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><p>前老板找到我，说现在这个设备失联的事该怎么弄，能怎么弄，最后估计只能现场一台台升级了。关键网口都在设备后面，估计还得拆下来才能通过网口升级。不过这个麻烦已经不用我考虑了，我现在头痛的是，居然要修改程序。</p>
+<p>查看了几个固定ip的地方，大概有6处，视频推送4处可以更改成域名，frp可以更改成域名，连接后台的app却不能直接改域名，因为在程序中，为了可靠性，做了个ip合法性验证，直接将配置文件的ip修改成域名，会导致程序停止运行。</p>
+<p>本来修改程序也没有什么，改一下，编译一下就过了，关键是前几天，我把ubuntu系统重新安装了，在系统opt文件夹下面的交叉编译环境没有拷贝备份。擦，这个玩意可难整了。当时花了好几天才搞定的。现在即使花几天重新搞好了。也不定就跟以前的环境一致。要是埋个雷在编译环境中，现在又没法认真测试程序。这样的app敢上线吗。</p>
+<p>不敢上也得上了，花了两天时间，搭好了编译环境。还好以前留有搭建笔记。这次省事多了。随手记录笔记，这真是个好习惯，要好好保持，好记性不如烂笔头。</p>
+<p>看着程序居然一次性编译过了，好有成就感。可是再好的程序也得测试，验证下啊。没有设备怎么验证呢，突然想起几个月前去横琴时打包好的几个箱子。至今还扔在车后备箱上。赶紧去搬上来，翻了好久，居然让我找到了一块开发版，虽然硬件版本跟现场设备会有一点差异。但内核是不变的。足够做验证了。</p>
+<p>可是翻遍了也只有开发板，没有找到电源，板子都起不来，调个屁啊。翻箱倒柜，在一堆破烂中，找到了以前换客厅吊顶灯留下的一个12v电源，居然还有一个带插头的电源线。就这样七拼八凑的将板子跑起来了。</p>
+<p>将设备后台地址更改为我的阿里云服务器。还好当时写代码的时候，在服务器上留了一套测试环境。替换了app,更改了ip,看到设备成功的连上来，真有点意外。记得当时开发时，编译环境有一部分是要从设备上拷贝出来的，不然会有版本冲突问题。这次居然不用拷贝，也能正常运行。见了鬼了。</p>
+<p>不管那么多了，能运行就行，将ip更改为域名，去阿里云后台将一个临时域名绑定到ip,设备通过这个域名能成功连接上来，每秒钟的传感器数据传输也正常。</p>
+<p>就这样吧，后面整理下现场怎么修改替换的步骤。别再来烦我了。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%97%A5%E8%AE%B0/" rel="tag"># 日记</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/%E6%8A%80%E6%9C%AF/ubuntu%E7%B3%BB%E7%BB%9F%E6%89%A9%E5%A4%A7%E4%BA%A4%E6%8D%A2%E7%A9%BA%E9%97%B4/" rel="prev" title="ubuntu系统扩大交换空间">
+                  <i class="fa fa-angle-left"></i> ubuntu系统扩大交换空间
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%E9%9A%8F%E6%83%B3/%E6%80%9D%E8%80%83%E5%BF%AB%E4%B8%8E%E6%85%A2/" rel="next" title="思考，快与慢">
+                  思考，快与慢 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  
+  <div class="comments giscus-container">
+  </div>
+  
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">sunow</span>
+  </div>
+
+<!-- Default Statcounter code for blog.sunow.top
+https://blog.sunow.top/ -->
+<script type="text/javascript">
+var sc_project=13137438; 
+var sc_invisible=0; 
+var sc_security="21a5949b"; 
+var scJsHost = "https://";
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="Web Analytics"
+href="https://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="https://c.statcounter.com/13137438/0/21a5949b/0/"
+alt="Web Analytics"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
+
+<script defer src="https://cloud.umami.is/script.js" data-website-id="37b17047-cede-42f9-ba38-a0e72e9bdafe"></script>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"sunowfox/blogcomment","repo_id":"R_kgDOOtukvA","category":"Announcements","category_id":"DIC_kwDOOtukvM4Cry5d","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":0,"theme":"light","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 7.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha256-dABdfBfUoC8vJUBOwGVdm8L9qlMWaHTIfXt+7GnZCIo=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"blog.sunow.top","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.23.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":"giscus","storage":true,"lazyload":false,"nav":null,"activeClass":"giscus"},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="初识rust  大概在17～18年的时候，当时主要在做充电桩，经过几轮的迭代后，对软件模块化，分层设计有了一些心得。最开始使用的是c++和qt来开发的，可能是代码组织的不太好，总有些偶尔莫名其妙死机的问题。每次出现都得花一两周时间排查，折腾几次后，反思可能自己的水平驾驭不了C++，后面花了半年重构了程序，全部采用c语言，即使使用了简单的C了，偶尔还是会出现死机问题。但毕竟比c++好解决一些了。然">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rust编程语言的一点体会">
+<meta property="og:url" content="https://blog.sunow.top/%E6%8A%80%E6%9C%AF/rust%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E4%B8%80%E7%82%B9%E4%BD%93%E4%BC%9A/index.html">
+<meta property="og:site_name" content="寂静山林">
+<meta property="og:description" content="初识rust  大概在17～18年的时候，当时主要在做充电桩，经过几轮的迭代后，对软件模块化，分层设计有了一些心得。最开始使用的是c++和qt来开发的，可能是代码组织的不太好，总有些偶尔莫名其妙死机的问题。每次出现都得花一两周时间排查，折腾几次后，反思可能自己的水平驾驭不了C++，后面花了半年重构了程序，全部采用c语言，即使使用了简单的C了，偶尔还是会出现死机问题。但毕竟比c++好解决一些了。然">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-05-27T03:33:06.000Z">
+<meta property="article:modified_time" content="2025-05-27T03:33:06.000Z">
+<meta property="article:author" content="sunow">
+<meta property="article:tag" content="技术">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://blog.sunow.top/%E6%8A%80%E6%9C%AF/rust%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E4%B8%80%E7%82%B9%E4%BD%93%E4%BC%9A/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://blog.sunow.top/%E6%8A%80%E6%9C%AF/rust%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E4%B8%80%E7%82%B9%E4%BD%93%E4%BC%9A/","path":"技术/rust编程语言的一点体会/","title":"rust编程语言的一点体会"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>rust编程语言的一点体会 | 寂静山林</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">寂静山林</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">思绪飘来飘去，偶尔在这里停留</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">sunow</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">108</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+          <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+          <a href="/tags/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+    
+    
+    <div class="links-of-blogroll">
+    <div class="sidebar-inner sidebar-recent-posts">
+     <div class="animated">
+       <div class="links-of-blogroll-title" style="margin-bottom: 10px; font-size: 18px;">
+		<!-- 选择合适的icon --><i class="fas fa-history" aria-hidden="true"></i>
+        近期更新
+      </div>
+      <ul class="links-of-blogroll-list">
+		<!-- 文章排序规格,-updated 按照文章更新时间倒排 -->
+        
+		 <!-- 显示四条近期文章 -->
+        
+          <li>
+            <a href="/%E6%97%A5%E8%AE%B0/260206-%E8%9B%8B%E7%B3%95/" title="蛋糕" target="_blank">蛋糕</a>
+          </li>
+        
+          <li>
+            <a href="/%E6%8A%80%E6%9C%AF/%E5%8F%98%E9%87%8F%E8%A6%86%E7%9B%96/" title="变量覆盖" target="_blank">变量覆盖</a>
+          </li>
+        
+          <li>
+            <a href="/%E6%8A%80%E6%9C%AF/%E6%97%A0%E9%A2%98/" title="无题" target="_blank">无题</a>
+          </li>
+        
+          <li>
+            <a href="/%E6%8A%80%E6%9C%AF/%E6%80%9D%E7%BB%B4%E6%A8%A1%E5%BC%8F/" title="思维模式" target="_blank">思维模式</a>
+          </li>
+        
+          <li>
+            <a href="/%E9%9A%8F%E6%83%B3/%E6%9D%83%E7%BB%8F/" title="权经" target="_blank">权经</a>
+          </li>
+        
+      </ul>
+      </div>
+      </div>
+    </div>
+   
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://blog.sunow.top/%E6%8A%80%E6%9C%AF/rust%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E7%9A%84%E4%B8%80%E7%82%B9%E4%BD%93%E4%BC%9A/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="sunow">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="寂静山林">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="rust编程语言的一点体会 | 寂静山林">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          rust编程语言的一点体会
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+
+      <time title="创建时间：2025-05-27 11:33:06" itemprop="dateCreated datePublished" datetime="2025-05-27T11:33:06+08:00">2025-05-27</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">分类于</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%8A%80%E6%9C%AF/" itemprop="url" rel="index"><span itemprop="name">技术</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><ol>
+<li>初识rust</li>
+</ol>
+<p>大概在17～18年的时候，当时主要在做充电桩，经过几轮的迭代后，对软件模块化，分层设计有了一些心得。最开始使用的是c++和qt来开发的，可能是代码组织的不太好，总有些偶尔莫名其妙死机的问题。每次出现都得花一两周时间排查，折腾几次后，反思可能自己的水平驾驭不了C++，后面花了半年重构了程序，全部采用c语言，即使使用了简单的C了，偶尔还是会出现死机问题。但毕竟比c++好解决一些了。然后花大部分的时间去研究怎么用C写出安全代码。但c实在太古老了，不仅编程效率低，而且一些原生的缺陷根本不是靠一些技巧能够解决的。</p>
+<p>这时偶然在网上看到说有一种编程语言rust,静态编译语言，运行效率跟c一样高，关键没有内存问题。于是就找了一些资料看了下，发现是一门很新的语言，15年才发布了1.0版本。对没有内存问题这个特性很好奇，到底怎么做到的，于是买了一本书，好像是《深入浅出rust》，里面比较系统介绍了rust语言特性，但当时只对原理感兴趣，重点看了所有权，生命周期那些篇章，有点豁然开朗的感觉。了解知识，有个说法叫第一性原理，rust正是从第一性原理出发，通过所有权，生命周期，彻底解决静态编译型语言中的内存问题。并由此引申出来的无畏并发特性。使语言天然从最核心支持并发编程。</p>
+<ol start="2">
+<li>使用rust</li>
+</ol>
+<p>又过了几年，因工作的原因，期间并没有深入了解或者使用rust。但一直有关注语言的发展动态。大概21年的时候，陈天有开了一门rust的付费课程，不贵，几十块钱，第一时间就报名了，想着有机会是不是可以学一学。就当作兴趣或者拓宽知识面了。但是这个课程也就跟完了基础篇，后面又放下了。无论学啥，一定要用起来，不然很难坚持下来。</p>
+<p>到了23年的时候，工作上有个新项目成立，是个ems网关，需要支持modbus，dlt645等协议，需要通过mqtt协议与后台连接，需要本地网页进行参数设置。说起来也不难，但性能要求比较高，单台需要支持1万个数据采集点同时采集。这时上个项目刚完成，是个智能仓库网关，因为全部采用c,导致开发周期都有点延后了。这时对c都有点抵触了，就想着何不试一试rust呢。</p>
+<p>通过前期调研，rust中有现成的modbus协议库tokio-modbus,支持并发和同步，有现成的redis接口库,有现成的mqtt接口库，有这些基础库就已经省了很多时间了，虽然c中也有这些成熟的库，但c的移植可不像rust一样，拿过来就能用的。这些只是项目要用到的库，更不要说语言支持的anyhow,thiserror,log,还有极为方便的serde，所以就决定下来使用rust开发了。</p>
+<p>于是花了大概20天时间，期间刚好有个十一假期，把陈天的课程全部看了一遍，把<a target="_blank" rel="noopener" href="https://course.rs/about-book.html">rust语言圣经(Rust Course)</a>)全部看了一遍。就算入门了，这里要说下，rust语言圣经比较适合初入门的人看，以比较简洁活泼的语言由简入深的讲解比较基础的知识点。陈天的课程放在初入门后在看比较好，讲的比较深入，涉及到的点也比较多。当然rust语言是一门还在发展中的语言，这么多年前的教程，有些知识点可能也过时了。rust的入门可能跟其他语言有点不一样，像c,c++可能只要先学了20%的知识点，就可以上手，以后边做边完善剩下的80%，rust不一样，你必须先学会80%的知识点，才能上手。边做边熟悉和巩固原来的知识点。</p>
+<p>后来就这样磕磕碰碰的上路了，刚开始确实有点难受的，跟编译器反复斗争了一段时间后，慢慢的就感觉越用越上手了，当然当年刚兴起的大语言模型功不可没。甚至为了利用大语言模型的能力，还充值了微软github copilot，这大大缩短了新手期的时间和难度，以前如果说学习rust曲线很陡峭，很难，我基本同意，但如果结合大语言模型的话，我觉的入门或者开发并没有想象中的难。</p>
+<p>项目开发中，为了赶进度，直接在tokio-mobus工程上添加了rtu-over-tcp客户端的支持，甚至也添加了对dlt645电表协议的支持。当时对语言了解不深，所谓的添加支持，只是将源码逐层拷贝一遍，改改文件名，添加一些不同的解析封装而已，里面有很多份一模一样的代码。后续有时间和机会的话，好好整理一下，甚至可以将dlt645协议的部分独立一个crates出来。</p>
+<p>自从使用rust开发这个ems网关项目后，一发不可收拾，后续只要有新的项目，都选择使用rust来做了。甚至还花了几个月的时间，将原先c开发的智能仓库网关重新用rust开发了一遍。一些单片机的蓝牙项目也使用rust的embassy框架来实现。一些产品测试工具也使用egui或者axum来实现。rust能实现的地方，就懒得在切换到其他语言去折腾了。</p>
+<ol start="3">
+<li>心得体会</li>
+</ol>
+<p>这几年使用下来，rust给人的感觉就是快速，可靠，舒坦，写完的代码，只要编译通过了，就可以放心运行起来。如果有问题，也是逻辑上的问题。只要程序中不用unsafe,不用panic基本上不会出现逻辑之外的异常。</p>
+<p>因为编译器的强大和类型系统的完整性，修改代码心智负担很小，只要把编译错误都解决了，修改的代码就不会出现意外的问题。当然有些编译器没法检查的地方，还得小心处理，比如对字符串的处理，像match分支用字符串时，就需要小心字符串别写错了。</p>
+<p>库管理很便捷，在cargo.toml中包含库版本就能直接使用了，这跟c&#x2F;c++的繁琐简直不是一个维度的东西。升级库也很方便，但升级需要小心一些兼容性问题。</p>
+<p>单元测试很方便，特别在ai的支持下，很多时候，都是写完代码了，直接让ai生成单元测试。</p>
+<p>生命周期的概念要清楚，但实际中很少用到，一般应用还没有到要使用引用来提高性能瓶颈的程度。</p>
+<p>当然也有一些不尽如人意的地方，比如如果写并发代码，在代码最里层用到了异步，那么整个调用链都得用异步，逐层添加async&#x2F;await， 这感觉就很繁琐。</p>
+<p>用std库写的代码跟不用std库写的代码没法通用，这样就造成，单片机嵌入式的代码和有操作系统的代码没法互相移植。它们基本上是两套不一样的东西。</p>
+<p>对于c&#x2F;c++系的开发者来说，只要接触了rust,就不会回头了，这就像开过了电动车就不会还想开油车一样。这也是rust的生态位。随着rust的发展，rust生态的完善，会有越来越多的底层或者高性能应用迁移到rust。</p>
+<p>技术是迭代式进步的，也许十年二十年又会有其他新的语言兴起，取代了rust。但至少目前来看，rust代表着静态编译型语言的未来。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%8A%80%E6%9C%AF/" rel="tag"># 技术</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/%E9%9A%8F%E6%83%B3/%E5%85%B3%E4%BA%8E%E5%86%99%E8%AF%97/" rel="prev" title="关于写诗">
+                  <i class="fa fa-angle-left"></i> 关于写诗
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/%E6%97%A5%E8%AE%B0/250603-%E6%95%99%E8%82%B2%E5%BF%83%E6%80%81/" rel="next" title="教育心态">
+                  教育心态 <i class="fa fa-angle-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    
+  
+  <div class="comments giscus-container">
+  </div>
+  
+  
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">sunow</span>
+  </div>
+
+<!-- Default Statcounter code for blog.sunow.top
+https://blog.sunow.top/ -->
+<script type="text/javascript">
+var sc_project=13137438; 
+var sc_invisible=0; 
+var sc_security="21a5949b"; 
+var scJsHost = "https://";
+document.write("<sc"+"ript type='text/javascript' src='" +
+scJsHost+
+"statcounter.com/counter/counter.js'></"+"script>");
+</script>
+<noscript><div class="statcounter"><a title="Web Analytics"
+href="https://statcounter.com/" target="_blank"><img
+class="statcounter"
+src="https://c.statcounter.com/13137438/0/21a5949b/0/"
+alt="Web Analytics"
+referrerPolicy="no-referrer-when-downgrade"></a></div></noscript>
+<!-- End of Statcounter Code -->
+
+<script defer src="https://cloud.umami.is/script.js" data-website-id="37b17047-cede-42f9-ba38-a0e72e9bdafe"></script>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+<script class="next-config" data-name="giscus" type="application/json">{"enable":true,"repo":"sunowfox/blogcomment","repo_id":"R_kgDOOtukvA","category":"Announcements","category_id":"DIC_kwDOOtukvM4Cry5d","mapping":"pathname","strict":0,"reactions_enabled":1,"emit_metadata":0,"theme":"light","lang":"zh-CN","crossorigin":"anonymous","input_position":"bottom","loading":"lazy"}</script>
+
+<script>
+document.addEventListener('page:loaded', () => {
+  if (!CONFIG.page.comments) return;
+
+  NexT.utils.loadComments('.giscus-container')
+    .then(() => NexT.utils.getScript('https://giscus.app/client.js', {
+      attributes: {
+        async                   : true,
+        crossOrigin             : 'anonymous',
+        'data-repo'             : CONFIG.giscus.repo,
+        'data-repo-id'          : CONFIG.giscus.repo_id,
+        'data-category'         : CONFIG.giscus.category,
+        'data-category-id'      : CONFIG.giscus.category_id,
+        'data-mapping'          : CONFIG.giscus.mapping,
+        'data-strict'           : CONFIG.giscus.strict,
+        'data-reactions-enabled': CONFIG.giscus.reactions_enabled,
+        'data-emit-metadata'    : CONFIG.giscus.emit_metadata,
+        'data-theme'            : CONFIG.giscus.theme,
+        'data-lang'             : CONFIG.giscus.lang,
+        'data-input-position'   : CONFIG.giscus.input_position,
+        'data-loading'          : CONFIG.giscus.loading
+      },
+      parentNode: document.querySelector('.giscus-container')
+    }));
+});
+</script>
+
+</body>
+</html>
